@@ -1,0 +1,28 @@
+version: '3.1'
+services:
+  kitty-split:
+    build: ./
+    depends_on:
+      - db
+    links:
+      - "db:database"
+    ports:
+      - "80:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/kitty_split
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - pgdata:/Users/p.v.gordeev/tinkoff/meetup/kitty_split/database_data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=kitty_split
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  pgdata:
