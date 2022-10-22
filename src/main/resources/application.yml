@@ -1,2 +1,7 @@
 defaults:
   time.zone: Europe/Moscow
+
+spring:
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
