@@ -2,10 +2,8 @@ package ru.sau.kitty_split.event.dao
 
 import org.springframework.stereotype.Repository
 import ru.sau.kitty_split.event.service.CreatedEvent
-import java.util.Optional
+import ru.sau.kitty_split.event.service.FullEvent
 import java.util.UUID
-
-fun <T> Optional<T>.unwrap(): T? = orElse(null)
 
 @Repository
 class EventsDao(
@@ -17,9 +15,8 @@ class EventsDao(
         .let(eventsRepository::save)
         .let(eventsDaoMapper::mapCreatedEvent)
 
-    fun findEventById(eventId: UUID): CreatedEvent? = eventsRepository
-        .findById(eventId)
-        .map(eventsDaoMapper::mapCreatedEvent)
-        .unwrap()
+    fun findFullEventById(eventId: UUID): FullEvent? = eventsRepository
+        .findByIdFetchPayments(eventId)
+        ?.let(eventsDaoMapper::mapFullEvent)
 
 }

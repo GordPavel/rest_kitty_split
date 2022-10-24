@@ -18,7 +18,10 @@ abstract class HttpCodeException(
     val errorMessage: String,
     val logMessage: String? = null,
     override val cause: Throwable? = null,
-) : RuntimeException()
+) : RuntimeException(
+    logMessage,
+    cause,
+)
 
 data class ApiErrorResponse(
     val errorMessage: String,

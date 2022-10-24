@@ -18,9 +18,10 @@ class EventsService(
     ): CreatedEvent = eventServiceMapper
         .mapCreateEventToCreateEntity(
             event,
-            OffsetDateTime.ofInstant(Instant.now(clock), event.timeZone)
+            OffsetDateTime.ofInstant(Instant.now(clock), event.timeZone),
         )
         .let(eventsDao::save)
 
-    fun getEvent(eventId: UUID): CreatedEvent? = eventsDao.findEventById(eventId)
+    fun getEvent(eventId: UUID): FullEvent? =
+        eventsDao.findFullEventById(eventId)
 }

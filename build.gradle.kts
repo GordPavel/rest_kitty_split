@@ -26,6 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.vladmihalcea:hibernate-types-55:2.20.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
     kapt("org.mapstruct:mapstruct-processor:$mapstructVersion")
