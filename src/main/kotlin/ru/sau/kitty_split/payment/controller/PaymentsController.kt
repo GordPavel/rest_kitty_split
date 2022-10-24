@@ -1,9 +1,10 @@
-package ru.sau.kitty_split.event.controller
+package ru.sau.kitty_split.payment.controller
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus.CREATED
+import org.springframework.http.HttpStatus.OK
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,40 +13,43 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import ru.sau.kitty_split.commons.parseTimeZone
-import ru.sau.kitty_split.event.service.EventsService
+import ru.sau.kitty_split.payment.service.PaymentsService
 import java.time.ZoneId
 import java.util.UUID
-import javax.validation.Valid
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/events/{eventId}/payments")
 @Validated
-internal class EventsController(
+class PaymentsController(
     @Value("\${defaults.time.zone}")
     private val defaultTimeZone: ZoneId,
-    private val eventsControllerMapper: EventsControllerMapper,
-    private val eventsService: EventsService,
+    private val paymentsService: PaymentsService,
+    private val paymentsControllerMapper: PaymentsControllerMapper,
 ) {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    fun createEvent(
-        @Valid @RequestBody eventDto: CreateEventControllerDto,
+    fun creatPayment(
+        @PathVariable eventId: UUID,
+        @RequestBody payment: CreatePaymentControllerDto,
         @RequestHeader(value = "timezone", required = false) headerTimezone: String?,
-    ): CreatedEventControllerDto = eventsControllerMapper
+    ): CreatedPaymentControllerDto = paymentsControllerMapper
         .fromControllerDto(
-            eventDto,
+            payment,
+            eventId,
             parseTimeZone(headerTimezone, defaultTimeZone),
         )
-        .let(eventsService::createEvent)
-        .let(eventsControllerMapper::toControllerDto)
+        .let(paymentsService::createPayment)
+        .let(paymentsControllerMapper::toControllerDto)
 
-    @GetMapping("/{eventId}")
-    fun getEvent(
+    @PatchMapping("/{paymentId}")
+    @ResponseStatus(OK)
+    fun updatePayment(
         @PathVariable eventId: UUID,
-    ): EventFullControllerDto = eventsService
-        .getEvent(eventId)
-        ?.let(eventsControllerMapper::toControllerDto)
-        ?: throw EventNotFoundException(eventId)
+        @PathVariable paymentId: UUID,
+
+    ) {
+
+    }
 
 }

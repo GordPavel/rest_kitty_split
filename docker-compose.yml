@@ -16,13 +16,10 @@ services:
   db:
     image: postgres:14-alpine
     volumes:
-      - pgdata:/Users/p.v.gordeev/tinkoff/meetup/kitty_split/database_data
+      - ./database/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=kitty_split
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
-
-volumes:
-  pgdata:

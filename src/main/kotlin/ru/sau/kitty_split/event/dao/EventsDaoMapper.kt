@@ -2,7 +2,11 @@ package ru.sau.kitty_split.event.dao
 
 import org.springframework.stereotype.Service
 import ru.sau.kitty_split.event.service.CreatedEvent
+import ru.sau.kitty_split.event.service.EventPayment
+import ru.sau.kitty_split.event.service.FullEvent
+import ru.sau.kitty_split.payment.service.PaymentPart
 import ru.sau.kitty_split.util.SqlTimestampMapper
+import java.math.BigDecimal
 import java.util.Currency
 
 @Service
@@ -18,18 +22,34 @@ class EventsDaoMapper(
             event.creator,
             timestamp,
             offset,
-            event.defaultCurrency.currencyCode
+            event.defaultCurrency.currencyCode,
+            emptyList(),
         )
     }
 
-    fun mapCreatedEvent(event: EventEntity): CreatedEvent {
-        val created = sqlTimestampMapper.mapSqlTimeStampToOffsetDateTime(event.created, event.offset)
-        return CreatedEvent(
-            event.id!!,
-            event.name,
-            event.creator,
-            Currency.getInstance(event.defaultCurrency),
-            created
-        )
-    }
+    fun mapCreatedEvent(event: EventEntity): CreatedEvent = CreatedEvent(
+        event.id!!,
+        event.name,
+        event.creator,
+        Currency.getInstance(event.defaultCurrency),
+        sqlTimestampMapper.mapSqlTimeStampToOffsetDateTime(event.created, event.offset),
+    )
+
+    fun mapFullEvent(event: EventEntity): FullEvent = FullEvent(
+        event.id!!,
+        event.name,
+        event.creator,
+        Currency.getInstance(event.defaultCurrency),
+        sqlTimestampMapper.mapSqlTimeStampToOffsetDateTime(event.created, event.offset),
+        event.payments.map { paymentEntity ->
+            EventPayment(
+                paymentEntity.id!!,
+                paymentEntity.name,
+                paymentEntity.payer,
+                BigDecimal(paymentEntity.amount),
+                paymentEntity.parts.map { PaymentPart(it.payee, it.part) },
+                sqlTimestampMapper.mapSqlTimeStampToOffsetDateTime(paymentEntity.created, paymentEntity.offset),
+            )
+        },
+    )
 }
