@@ -14,6 +14,16 @@ data class CreatePaymentDto(
     val eventId: UUID,
 )
 
+data class UpdatePaymentDto(
+    val id: UUID,
+    val eventId: UUID,
+    val name: String?,
+    val payer: String?,
+    val amount: BigDecimal?,
+    val parts: List<PaymentPart>?,
+    val created: OffsetDateTime?,
+)
+
 data class CreatedPaymentDto(
     val id: UUID,
     val name: String,

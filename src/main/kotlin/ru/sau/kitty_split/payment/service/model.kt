@@ -15,8 +15,23 @@ data class CreatePayment(
     val timeZone: ZoneId,
 )
 
+data class UpdatePayment(
+    val id: UUID,
+    val eventId: UUID,
+    val name: String?,
+    val payer: String?,
+    val amount: UpdatePaymentAmount?,
+    val parts: List<PaymentPart>?,
+    val created: OffsetDateTime?,
+)
+
 data class CreatePaymentAmount(
     val amount: BigDecimal,
+    val currency: Currency?,
+)
+
+data class UpdatePaymentAmount(
+    val amount: BigDecimal?,
     val currency: Currency?,
 )
 

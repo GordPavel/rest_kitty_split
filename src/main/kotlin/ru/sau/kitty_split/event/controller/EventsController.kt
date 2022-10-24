@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import ru.sau.kitty_split.commons.parseTimeZone
+import ru.sau.kitty_split.event.EventNotFoundException
 import ru.sau.kitty_split.event.service.EventsService
 import java.time.ZoneId
 import java.util.UUID

@@ -1,6 +1,6 @@
 package ru.sau.kitty_split.commons
 
-import ru.sau.kitty_split.event.controller.InvalidTimeZoneException
+import ru.sau.kitty_split.InvalidTimeZoneException
 import java.time.DateTimeException
 import java.time.ZoneId
 

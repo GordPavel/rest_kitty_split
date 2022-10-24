@@ -47,9 +47,11 @@ class PaymentsController(
     fun updatePayment(
         @PathVariable eventId: UUID,
         @PathVariable paymentId: UUID,
-
+        @RequestBody paymentUpdate: UpdatePaymentControllerDto
     ) {
-
+        paymentsControllerMapper
+            .fromControllerDto(paymentUpdate, paymentId, eventId)
+            .run { paymentsService.updatePayment(this) }
     }
 
 }

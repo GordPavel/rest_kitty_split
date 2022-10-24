@@ -30,7 +30,7 @@ data class CreatedPaymentControllerDto(
 data class UpdatePaymentControllerDto(
     val name: String?,
     val payer: String?,
-    val amount: PaymentAmountDto?,
+    val amount: UpdatePaymentAmountDto?,
     val parts: List<PaymentPartDto>?,
     val created: OffsetDateTime?,
 )
@@ -38,6 +38,11 @@ data class UpdatePaymentControllerDto(
 data class PaymentAmountDto(
     @NotNull
     val amount: BigDecimal,
+    val currency: String?,
+)
+
+data class UpdatePaymentAmountDto(
+    val amount: BigDecimal?,
     val currency: String?,
 )
 

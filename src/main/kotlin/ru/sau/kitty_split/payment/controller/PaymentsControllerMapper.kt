@@ -6,6 +6,7 @@ import org.mapstruct.MappingConstants.ComponentModel
 import ru.sau.kitty_split.IncorrectCurrencyCodeException
 import ru.sau.kitty_split.payment.service.CreatePayment
 import ru.sau.kitty_split.payment.service.CreatedPayment
+import ru.sau.kitty_split.payment.service.UpdatePayment
 import java.time.ZoneId
 import java.util.UUID
 
@@ -26,4 +27,20 @@ abstract class PaymentsControllerMapper {
     ): CreatePayment
 
     abstract fun toControllerDto(payment: CreatedPayment): CreatedPaymentControllerDto
+
+    fun fromControllerDto(
+        payment: UpdatePaymentControllerDto,
+        id: UUID,
+        eventId: UUID,
+    ): UpdatePayment = try {
+        fromControllerDtoInternal(payment, id, eventId)
+    } catch (ex: IllegalArgumentException) {
+        throw IncorrectCurrencyCodeException(payment.amount!!.currency!!, ex)
+    }
+
+    protected abstract fun fromControllerDtoInternal(
+        payment: UpdatePaymentControllerDto,
+        id: UUID,
+        eventId: UUID,
+    ): UpdatePayment
 }

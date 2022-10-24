@@ -5,6 +5,7 @@ import org.mapstruct.Mapping
 import org.mapstruct.MappingConstants.ComponentModel
 import ru.sau.kitty_split.payment.dao.CreatePaymentDto
 import ru.sau.kitty_split.payment.dao.CreatedPaymentDto
+import ru.sau.kitty_split.payment.dao.UpdatePaymentDto
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.Currency
@@ -31,5 +32,11 @@ abstract class PaymentsServiceMapper {
             payment.created,
             payment.eventId,
         )
+
+    @Mapping(source = "amount", target = "amount")
+    abstract fun mapUpdatePaymentToUpdateEntity(
+        payment: UpdatePayment,
+        amount: BigDecimal?,
+    ): UpdatePaymentDto
 
 }
