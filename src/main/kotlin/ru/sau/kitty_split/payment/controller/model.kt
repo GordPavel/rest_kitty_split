@@ -1,5 +1,9 @@
 package ru.sau.kitty_split.payment.controller
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -13,42 +17,46 @@ data class CreatePaymentControllerDto(
     val name: String,
     @NotNull
     val payer: String,
+    @NotNull
     val amount: PaymentAmountDto,
-    val parts: List<PaymentPartDto> = emptyList(),
+    val currency: String?,
 )
 
 data class CreatedPaymentControllerDto(
     val id: UUID,
+    val eventId: UUID,
     val name: String,
     val payer: String,
-    val amount: PaymentAmountDto,
-    val parts: List<PaymentPartDto>,
+    val amount: PaymentAmountsAmountDto,
+    val currency: String,
     val created: OffsetDateTime,
-    val eventId: UUID,
 )
 
 data class UpdatePaymentControllerDto(
     val name: String?,
     val payer: String?,
-    val amount: UpdatePaymentAmountDto?,
-    val parts: List<PaymentPartDto>?,
+    val amount: PaymentAmountDto?,
+    val currency: String?,
     val created: OffsetDateTime?,
 )
 
-data class PaymentAmountDto(
-    @NotNull
-    val amount: BigDecimal,
-    val currency: String?,
+@JsonTypeInfo(use = NAME, property = "type", include = PROPERTY)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = PaymentEqualAmountDto::class, name = "equal"),
+    JsonSubTypes.Type(value = PaymentPartsAmountDto::class, name = "parts"),
+    JsonSubTypes.Type(value = PaymentAmountsAmountDto::class, name = "amounts"),
 )
+sealed interface PaymentAmountDto
 
-data class UpdatePaymentAmountDto(
-    val amount: BigDecimal?,
-    val currency: String?,
-)
+data class PaymentEqualAmountDto(
+    val totalAmount: BigDecimal,
+) : PaymentAmountDto
 
-data class PaymentPartDto(
-    @NotNull
-    val payee: String,
-    @NotNull
-    val part: BigDecimal,
-)
+data class PaymentPartsAmountDto(
+    val totalAmount: BigDecimal,
+    val spentParts: Map<String, BigDecimal>,
+) : PaymentAmountDto
+
+data class PaymentAmountsAmountDto(
+    val spentAmounts: Map<String, BigDecimal>,
+) : PaymentAmountDto

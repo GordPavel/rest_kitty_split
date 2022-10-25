@@ -1,44 +1,25 @@
 package ru.sau.kitty_split.payment.dao
 
-import org.springframework.stereotype.Service
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.MappingConstants.ComponentModel
 import ru.sau.kitty_split.event.dao.EventEntity
-import ru.sau.kitty_split.payment.service.PaymentPart
-import ru.sau.kitty_split.util.SqlTimestampMapper
-import java.math.BigDecimal
-import java.sql.Timestamp
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaUpdate
 import javax.persistence.criteria.Expression
 import javax.persistence.criteria.Root
 
-@Service
-class PaymentsDaoMapper(
-    private val sqlTimestampMapper: SqlTimestampMapper,
-) {
-    fun mapPaymentForCreation(payment: CreatePaymentDto, event: EventEntity): PaymentEntity {
-        val (timestamp: Timestamp, offset: String) = sqlTimestampMapper.mapOffsetDateTimeToSqlTimeStamp(payment.created)
-        return PaymentEntity(
-            null,
-            payment.name,
-            payment.payer,
-            timestamp,
-            offset,
-            payment.amount.toString(),
-            parts = payment.parts.map { PaymentPartEntity(it.payee, it.part) },
-            event,
-            event.id!!,
-        )
-    }
+@Mapper(componentModel = ComponentModel.SPRING)
+abstract class PaymentsDaoMapper {
+    @Mapping(source = "payment.name", target = "name")
+    @Mapping(source = "payment.payer", target = "payer")
+    @Mapping(source = "payment.created", target = "created")
+    @Mapping(source = "payment.spentAmounts", target = "spentAmounts")
+    @Mapping(source = "event", target = "event")
+    @Mapping(source = "event.id", target = "eventId")
+    abstract fun mapPaymentForCreation(payment: CreatePaymentDto, event: EventEntity): PaymentEntity
 
-    fun mapCreatedPayment(payment: PaymentEntity): CreatedPaymentDto = CreatedPaymentDto(
-        payment.id!!,
-        payment.name,
-        payment.payer,
-        BigDecimal(payment.amount),
-        payment.parts.map { PaymentPart(it.payee, it.part) },
-        sqlTimestampMapper.mapSqlTimeStampToOffsetDateTime(payment.created, payment.offset),
-        payment.eventId,
-    )
+    abstract fun mapCreatedPayment(payment: PaymentEntity): CreatedPaymentDto
 
     fun mapPaymentForUpdate(
         payment: UpdatePaymentDto,
@@ -55,18 +36,8 @@ class PaymentsDaoMapper(
 
         payment.name?.run { update.set("name", this) }
         payment.payer?.run { update.set("payer", this) }
-        payment.amount?.run { update.set("amount", this.toString()) }
-        payment.created
-            ?.let(sqlTimestampMapper::mapOffsetDateTimeToSqlTimeStamp)
-            ?.run {
-                val (timestamp: Timestamp, offset: String) = this
-                update.set("created", timestamp)
-                update.set("offset", offset)
-            }
-        payment.parts
-            ?.let { parts -> parts.map { PaymentPart(it.payee, it.part) } }
-            ?.run { update.set("parts", this) }
-
+        payment.spentAmounts?.run { update.set("spentAmounts", this.toString()) }
+        payment.created?.run { update.set("created", this) }
         return update
     }
 }

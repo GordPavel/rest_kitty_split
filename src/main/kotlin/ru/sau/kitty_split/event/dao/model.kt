@@ -8,4 +8,5 @@ data class CreateEventDto(
     val creator: String,
     val created: OffsetDateTime,
     val defaultCurrency: Currency,
+    val participants: List<String>,
 )

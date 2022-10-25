@@ -1,8 +1,11 @@
 package ru.sau.kitty_split.event.dao
 
+import com.vladmihalcea.hibernate.type.json.JsonType
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
 import ru.sau.kitty_split.payment.dao.PaymentEntity
-import java.sql.Timestamp
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -15,6 +18,10 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "events")
+@TypeDef(
+    name = "json",
+    typeClass = JsonType::class
+)
 data class EventEntity(
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -23,9 +30,11 @@ data class EventEntity(
     val id: UUID?,
     val name: String,
     val creator: String,
-    val created: Timestamp,
-    @Column(name = "created_offset")
-    val offset: String,
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    val created: OffsetDateTime,
+    @Type(type = "json")
+    @Column(columnDefinition = "jsonb")
+    val participants: List<String>,
     val defaultCurrency: String,
     @OneToMany(mappedBy = "event", fetch = LAZY)
     val payments: List<PaymentEntity>,

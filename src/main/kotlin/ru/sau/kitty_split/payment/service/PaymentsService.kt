@@ -26,19 +26,20 @@ class PaymentsService(
     fun createPayment(
         payment: CreatePayment,
     ): CreatedPayment {
-        val (_, _, _, defaultCurrency) = eventService
+        val (_, _, _, defaultCurrency, _, _, participants) = eventService
             .getEvent(payment.eventId)
             ?: throw EventNotFoundException(payment.eventId)
 
-        val (amount, paymentCurrency) = payment.amount
+        val (_, _, _, amount, paymentCurrency, _) = payment
 
-        val targetAmount = convertPaymentAmountToEventCurrency(amount, paymentCurrency, defaultCurrency)
+        val targetAmount = convertPaymentAmountToEventCurrency(amount.totalAmount(), paymentCurrency, defaultCurrency)
+        val spentAmounts = amount.spentParts(participants).mapValues { (_, part) -> part * targetAmount }
 
         return paymentsServiceMapper
             .mapCreatePaymentToCreateEntity(
                 payment,
-                OffsetDateTime.ofInstant(Instant.now(clock), payment.timeZone),
-                targetAmount,
+                spentAmounts,
+                OffsetDateTime.ofInstant(Instant.now(clock), payment.timeZone.normalized()),
             )
             .let(paymentsDao::save)
             .let { paymentsServiceMapper.mapCreatedPaymentFromCreateEntity(it, defaultCurrency) }
@@ -47,16 +48,20 @@ class PaymentsService(
     fun updatePayment(
         payment: UpdatePayment
     ) {
-        val targetAmount = payment.amount?.amount
+        val targetAmount = payment.amount
             ?.let { sourceAmount ->
-                payment.amount.currency
+                payment.currency
                     ?.let {
-                        val (_, _, _, defaultCurrency) = eventService
+                        val (_, _, _, defaultCurrency, _, _, participants) = eventService
                             .getEvent(payment.eventId)
                             ?: throw EventNotFoundException(payment.eventId)
-                        convertPaymentAmountToEventCurrency(sourceAmount, payment.amount.currency, defaultCurrency)
+                        val targetAmount = convertPaymentAmountToEventCurrency(
+                            sourceAmount.totalAmount(),
+                            payment.currency,
+                            defaultCurrency
+                        )
+                        sourceAmount.spentParts(participants).mapValues { (_, part) -> part * targetAmount }
                     }
-                    ?: sourceAmount
             }
 
         paymentsServiceMapper

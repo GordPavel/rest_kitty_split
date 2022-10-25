@@ -6,7 +6,7 @@ import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import ru.sau.kitty_split.event.dao.EventEntity
 import java.math.BigDecimal
-import java.sql.Timestamp
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -32,21 +32,14 @@ data class PaymentEntity(
     val id: UUID?,
     val name: String,
     val payer: String,
-    val created: Timestamp,
-    @Column(name = "created_offset")
-    val offset: String,
-    val amount: String,
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    val created: OffsetDateTime,
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
-    val parts: List<PaymentPartEntity>,
+    val spentAmounts: Map<String, BigDecimal>,
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "event_id")
     val event: EventEntity,
     @Column(name = "event_id", insertable = false, updatable = false)
     val eventId: UUID,
-)
-
-data class PaymentPartEntity(
-    val payee: String,
-    val part: BigDecimal,
 )

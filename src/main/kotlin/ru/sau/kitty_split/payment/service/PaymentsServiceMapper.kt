@@ -12,31 +12,38 @@ import java.util.Currency
 
 @Mapper(componentModel = ComponentModel.SPRING)
 abstract class PaymentsServiceMapper {
-    @Mapping(source = "amount", target = "amount")
+
+    @Mapping(source = "payment.name", target = "name")
+    @Mapping(source = "payment.payer", target = "payer")
+    @Mapping(source = "payment.eventId", target = "eventId")
+    @Mapping(source = "created", target = "created")
+    @Mapping(source = "spentAmounts", target = "spentAmounts")
     abstract fun mapCreatePaymentToCreateEntity(
         payment: CreatePayment,
+        spentAmounts: Map<String, BigDecimal>,
         created: OffsetDateTime,
-        amount: BigDecimal,
     ): CreatePaymentDto
 
     fun mapCreatedPaymentFromCreateEntity(payment: CreatedPaymentDto, currency: Currency): CreatedPayment =
         CreatedPayment(
             payment.id,
+            payment.eventId,
             payment.name,
             payment.payer,
-            CreatedPaymentAmount(
-                payment.amount,
-                currency,
-            ),
-            parts = payment.parts,
+            PaymentAmountsAmount(payment.spentAmounts),
+            currency = currency,
             payment.created,
-            payment.eventId,
         )
 
-    @Mapping(source = "amount", target = "amount")
+    @Mapping(source = "payment.id", target = "id")
+    @Mapping(source = "payment.name", target = "name")
+    @Mapping(source = "payment.payer", target = "payer")
+    @Mapping(source = "payment.eventId", target = "eventId")
+    @Mapping(source = "payment.created", target = "created")
+    @Mapping(source = "spentAmounts", target = "spentAmounts")
     abstract fun mapUpdatePaymentToUpdateEntity(
         payment: UpdatePayment,
-        amount: BigDecimal?,
+        spentAmounts: Map<String, BigDecimal>?,
     ): UpdatePaymentDto
 
 }

@@ -1,6 +1,5 @@
 package ru.sau.kitty_split.event.service
 
-import ru.sau.kitty_split.payment.service.PaymentPart
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -12,6 +11,7 @@ data class CreateEvent(
     val creator: String,
     val defaultCurrency: Currency,
     val timeZone: ZoneId,
+    val participants: List<String>,
 )
 
 data class CreatedEvent(
@@ -20,6 +20,7 @@ data class CreatedEvent(
     val creator: String,
     val defaultCurrency: Currency,
     val created: OffsetDateTime,
+    val participants: List<String>,
 )
 
 data class FullEvent(
@@ -29,13 +30,13 @@ data class FullEvent(
     val defaultCurrency: Currency,
     val created: OffsetDateTime,
     val payments: List<EventPayment>,
+    val participants: List<String>,
 )
 
 data class EventPayment(
     val id: UUID,
     val name: String,
     val payer: String,
-    val amount: BigDecimal,
-    val parts: List<PaymentPart>,
+    val spentAmounts: Map<String, BigDecimal>,
     val created: OffsetDateTime,
 )

@@ -13,10 +13,10 @@ class KittySplitService(
 ) {
 
     fun splitEvent(eventId: UUID): List<Transaction> {
-        val (_, _, _, eventCurrency, _, payments) = eventService.getEvent(eventId)
+        val (_, _, _, eventCurrency, _, payments, participants) = eventService.getEvent(eventId)
             ?: throw EventNotFoundException(eventId)
 
-        val inputData = splitServiceMapper.mapPaymentsToInputData(payments)
+        val inputData = splitServiceMapper.mapPaymentsToInputData(payments, participants)
         val (_, transactions) = splitService.splitBill(inputData)
 
         return splitServiceMapper.mapOutputDataToTransactions(transactions, eventCurrency)

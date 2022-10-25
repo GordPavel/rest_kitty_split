@@ -20,7 +20,7 @@ class EventsService(
     ): CreatedEvent = eventServiceMapper
         .mapCreateEventToCreateEntity(
             event,
-            OffsetDateTime.ofInstant(Instant.now(clock), event.timeZone),
+            OffsetDateTime.ofInstant(Instant.now(clock), event.timeZone.normalized()),
         )
         .let(eventsDao::save)
 

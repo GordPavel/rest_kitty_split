@@ -1,6 +1,5 @@
 package ru.sau.kitty_split.event.controller
 
-import ru.sau.kitty_split.payment.controller.PaymentPartDto
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -16,6 +15,8 @@ data class CreateEventControllerDto(
     val creator: String,
     @NotNull
     val defaultCurrency: String,
+    @NotNull
+    val participants: List<String>,
 )
 
 data class CreatedEventControllerDto(
@@ -23,6 +24,7 @@ data class CreatedEventControllerDto(
     val name: String,
     val creator: String,
     val defaultCurrency: String,
+    val participants: List<String>,
     val created: OffsetDateTime,
 )
 
@@ -32,6 +34,7 @@ data class EventFullControllerDto(
     val creator: String,
     val defaultCurrency: String,
     val created: OffsetDateTime,
+    val participants: List<String>,
     val payments: List<EventFullDtoPayment>,
 )
 
@@ -39,7 +42,6 @@ data class EventFullDtoPayment(
     val id: UUID,
     val name: String,
     val payer: String,
-    val amount: BigDecimal,
-    val parts: List<PaymentPartDto>,
+    val spentAmounts: Map<String, BigDecimal>,
     val created: OffsetDateTime,
 )
