@@ -14,9 +14,9 @@ import java.time.OffsetDateTime
 import java.time.ZoneId
 
 abstract class HttpCodeException(
-    val responseStatus: HttpStatus,
-    val errorMessage: String,
-    val logMessage: String? = null,
+    open val responseStatus: HttpStatus,
+    open val errorMessage: String,
+    open val logMessage: String? = null,
     override val cause: Throwable? = null,
 ) : RuntimeException(
     logMessage,

@@ -5,7 +5,7 @@ import ru.sau.kitty_split.commons.HttpCodeException
 
 class IncorrectCurrencyCodeException(
     currencyCode: String,
-    cause: Throwable,
+    cause: Throwable? = null,
 ) : HttpCodeException(
     responseStatus = BAD_REQUEST,
     errorMessage = "Can't recognize currency $currencyCode",
@@ -13,7 +13,7 @@ class IncorrectCurrencyCodeException(
     cause = cause,
 )
 
-§class InvalidTimeZoneException(
+class InvalidTimeZoneException(
     incorrectTimeZone: String,
     override val cause: Throwable,
 ) : HttpCodeException(

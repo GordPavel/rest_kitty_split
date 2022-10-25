@@ -9,3 +9,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/kitty_split
     username: admin
     password: password
+
+external:
+  open.exchange:
+    base-url: "http://openexchangerates.org/api"
+    app-id: ${OPEN_EXCHANGE_APP_ID}

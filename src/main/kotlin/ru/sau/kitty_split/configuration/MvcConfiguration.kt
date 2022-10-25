@@ -14,10 +14,13 @@ import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.math.BigDecimal
+import java.math.RoundingMode.HALF_UP
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -30,9 +33,11 @@ class MvcConfiguration(
     private val externalRestConfigurations: ExternalRestConfigurations,
 ) : WebMvcConfigurer {
     @Bean
+    @Primary
     fun externalRestJacksonObjectMapper(): ObjectMapper = ObjectMapper()
         .registerKotlinModule()
         .registerModule(RestJavaTimeModule(externalRestConfigurations.format))
+        .registerModule(RestBigDecimalModule(externalRestConfigurations.format))
 
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         converters.add(MappingJackson2HttpMessageConverter(externalRestJacksonObjectMapper()))
@@ -49,6 +54,7 @@ data class ExternalRestConfigurations(
 @ConstructorBinding
 data class ExternalRestFormatConfigurations(
     val offsetDateTime: String,
+    val bigDecimalScale: Int,
 )
 
 private class RestJavaTimeModule(
@@ -66,6 +72,23 @@ private class RestJavaTimeModule(
             object : StdDeserializer<OffsetDateTime>(OffsetDateTime::class.java) {
                 override fun deserialize(p: JsonParser, ctxt: DeserializationContext): OffsetDateTime =
                     OffsetDateTime.parse(p.valueAsString, restOffsetDateTimeFormatter)
+            }
+        )
+    }
+}
+
+private class RestBigDecimalModule(
+    externalRestFormatConfigurations: ExternalRestFormatConfigurations,
+) : SimpleModule() {
+    init {
+        addSerializer(
+            BigDecimal::class.java,
+            object : StdSerializer<BigDecimal>(BigDecimal::class.java) {
+                override fun serialize(value: BigDecimal, gen: JsonGenerator, provider: SerializerProvider) {
+                    gen.writeString(
+                        value.setScale(externalRestFormatConfigurations.bigDecimalScale, HALF_UP).toString()
+                    )
+                }
             }
         )
     }

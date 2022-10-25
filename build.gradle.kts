@@ -21,6 +21,8 @@ repositories {
 
 dependencies {
     val mapstructVersion = "1.5.2.Final"
+    val kotlinLoggingVersion = "2.1.23"
+    val caffeineVersion = "3.1.1"
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -30,6 +32,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
     kapt("org.mapstruct:mapstruct-processor:$mapstructVersion")
+    implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
