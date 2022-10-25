@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -52,6 +53,15 @@ class PaymentsController(
         paymentsControllerMapper
             .fromControllerDto(paymentUpdate, paymentId, eventId)
             .run { paymentsService.updatePayment(this) }
+    }
+
+    @DeleteMapping("/{paymentId}")
+    @ResponseStatus(OK)
+    fun removePayment(
+        @PathVariable eventId: UUID,
+        @PathVariable paymentId: UUID,
+    ) {
+        paymentsService.deletePayment(eventId, paymentId)
     }
 
 }

@@ -11,6 +11,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.Currency
+import java.util.UUID
 
 @Service
 @Transactional
@@ -73,5 +74,9 @@ class PaymentsService(
             else currencyRatesService.convertAmountBetweenCurrencies(amount, it, defaultCurrency)
         }
         ?: amount
+
+    fun deletePayment(eventId: UUID, paymentId: UUID) {
+        paymentsDao.deletePayment(eventId, paymentId)
+    }
 
 }

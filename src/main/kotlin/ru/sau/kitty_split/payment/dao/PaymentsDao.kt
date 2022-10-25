@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Propagation.MANDATORY
 import org.springframework.transaction.annotation.Transactional
 import ru.sau.kitty_split.event.dao.EventEntity
 import ru.sau.kitty_split.payment.PaymentNotFoundException
+import java.util.UUID
 import javax.persistence.EntityManager
 import javax.persistence.criteria.CriteriaUpdate
 
@@ -32,6 +33,10 @@ class PaymentsDao(
         when {
             rowsUpdated == 0 -> throw PaymentNotFoundException(payment.id, payment.eventId)
         }
+    }
+
+    fun deletePayment(eventId: UUID, paymentId: UUID) {
+        paymentsRepository.deleteByIdAndEventId(paymentId, eventId)
     }
 
 }
