@@ -1,0 +1,777 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Kitty split REST API",
+    "license": {}
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "events-controller",
+      "description": "Events Controller"
+    },
+    {
+      "name": "payments-controller",
+      "description": "Payments Controller"
+    },
+    {
+      "name": "split-controller",
+      "description": "Split Controller"
+    }
+  ],
+  "paths": {
+    "/events": {
+      "post": {
+        "tags": [
+          "events-controller"
+        ],
+        "summary": "Создание нового события",
+        "operationId": "createEventUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "eventDto",
+            "description": "eventDto",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateEventControllerDto"
+            }
+          },
+          {
+            "name": "Зона часового пояса",
+            "in": "header",
+            "description": "timezone",
+            "required": false,
+            "type": "string",
+            "default": "Europe/Moscow"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Событие успешно создано",
+            "schema": {
+              "$ref": "#/definitions/CreatedEventControllerDto"
+            }
+          },
+          "400": {
+            "description": "Ошибка входных данных"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "/events/{eventId}": {
+      "get": {
+        "tags": [
+          "events-controller"
+        ],
+        "summary": "Получение события",
+        "operationId": "getEventUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Id события",
+            "in": "path",
+            "description": "eventId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Событие успешно найдено",
+            "schema": {
+              "$ref": "#/definitions/EventFullControllerDto"
+            }
+          },
+          "400": {
+            "description": "Ошибка входных данных"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Сущность не найдена"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/payments": {
+      "post": {
+        "tags": [
+          "payments-controller"
+        ],
+        "summary": "Создание нового платежа",
+        "operationId": "creatPaymentUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Id события",
+            "in": "path",
+            "description": "eventId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          },
+          {
+            "in": "body",
+            "name": "payment",
+            "description": "payment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePaymentControllerDto"
+            }
+          },
+          {
+            "name": "Зона часового пояса",
+            "in": "header",
+            "description": "timezone",
+            "required": false,
+            "type": "string",
+            "default": "Europe/Moscow"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Платеж успешно создан",
+            "schema": {
+              "$ref": "#/definitions/CreatedPaymentControllerDto"
+            }
+          },
+          "400": {
+            "description": "Ошибка входных данных"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/payments/{paymentId}": {
+      "delete": {
+        "tags": [
+          "payments-controller"
+        ],
+        "summary": "Удаление платежа",
+        "operationId": "removePaymentUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Id платежа",
+            "in": "path",
+            "description": "paymentId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          },
+          {
+            "name": "Id события",
+            "in": "path",
+            "description": "eventId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Платеж успешно удален"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Ошибка входных данных"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "payments-controller"
+        ],
+        "summary": "Частичное обновление платежа",
+        "operationId": "updatePaymentUsingPATCH",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Id платежа",
+            "in": "path",
+            "description": "paymentId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          },
+          {
+            "name": "Id события",
+            "in": "path",
+            "description": "eventId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          },
+          {
+            "in": "body",
+            "name": "paymentUpdate",
+            "description": "paymentUpdate",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePaymentControllerDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Платеж успешно обновлен"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Ошибка входных данных"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Сущность не найдена"
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера"
+          }
+        }
+      }
+    },
+    "/events/{eventId}/transactions": {
+      "get": {
+        "tags": [
+          "split-controller"
+        ],
+        "summary": "Получение списка транзакций для оплаты счета",
+        "operationId": "getEventTransactionsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Id события",
+            "in": "path",
+            "description": "eventId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "x-example": "576ac17b-c5b9-4bb7-a33f-317e38d03044"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список транзакций успешно получен",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TransactionDto"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApiErrorResponse": {
+      "type": "object",
+      "required": [
+        "errorMessage",
+        "timestamp"
+      ],
+      "properties": {
+        "errorMessage": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "ApiErrorResponse",
+      "description": "Ошибка"
+    },
+    "CreateEventControllerDto": {
+      "type": "object",
+      "required": [
+        "creator",
+        "defaultCurrency",
+        "name",
+        "participants"
+      ],
+      "properties": {
+        "creator": {
+          "type": "string",
+          "description": "Ник создателя"
+        },
+        "defaultCurrency": {
+          "type": "string",
+          "description": "Код валюты по-умолчанию, к которой будут приводиться все платежи в других валютах. Стандарт ISO 4217"
+        },
+        "name": {
+          "type": "string",
+          "description": "Название события"
+        },
+        "participants": {
+          "type": "array",
+          "description": "Никнеймы участников события",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "CreateEventControllerDto",
+      "description": "Сущность создания нового события"
+    },
+    "CreatePaymentControllerDto": {
+      "type": "object",
+      "required": [
+        "amount",
+        "name",
+        "payer"
+      ],
+      "properties": {
+        "amount": {
+          "example": {
+            "type": "amounts",
+            "spentAmounts": {
+              "payeeNickname1": "500.0",
+              "payeeNickname2": "300.0"
+            }
+          },
+          "description": "Способ разделения между участниками вместе с суммой",
+          "$ref": "#/definitions/PaymentAmountsAmountDto"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Альтернативная валюта, если отличается от валюты по-умолчанию события"
+        },
+        "name": {
+          "type": "string",
+          "description": "Что было оплачено"
+        },
+        "payer": {
+          "type": "string",
+          "description": "Никнейм плательщика"
+        }
+      },
+      "title": "CreatePaymentControllerDto",
+      "description": "Сущность создания нового платежа"
+    },
+    "CreatedEventControllerDto": {
+      "type": "object",
+      "required": [
+        "created",
+        "creator",
+        "defaultCurrency",
+        "id",
+        "name",
+        "participants"
+      ],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время создания события"
+        },
+        "creator": {
+          "type": "string",
+          "description": "Ник создателя"
+        },
+        "defaultCurrency": {
+          "type": "string",
+          "description": "Код валюты по-умолчанию, к которой будут приводиться все платежи в других валютах. Стандарт ISO 4217"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "id события"
+        },
+        "name": {
+          "type": "string",
+          "description": "Название события"
+        },
+        "participants": {
+          "type": "array",
+          "description": "Никнеймы участников события",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "CreatedEventControllerDto",
+      "description": "Сущность созданного события"
+    },
+    "CreatedPaymentControllerDto": {
+      "type": "object",
+      "required": [
+        "amount",
+        "created",
+        "currency",
+        "eventId",
+        "id",
+        "name",
+        "payer"
+      ],
+      "properties": {
+        "amount": {
+          "description": "Сколько было потрачено на кого из участников",
+          "$ref": "#/definitions/PaymentAmountsAmountDto"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время создания платежа"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Валюта платежа"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Id события"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Id платежа"
+        },
+        "name": {
+          "type": "string",
+          "description": "Что было оплачено"
+        },
+        "payer": {
+          "type": "string",
+          "description": "Никнейм плательщика"
+        }
+      },
+      "title": "CreatedPaymentControllerDto",
+      "description": "Сущность созданного платежа"
+    },
+    "EventFullControllerDto": {
+      "type": "object",
+      "required": [
+        "created",
+        "creator",
+        "defaultCurrency",
+        "id",
+        "name",
+        "participants",
+        "payments"
+      ],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время создания события"
+        },
+        "creator": {
+          "type": "string",
+          "description": "Ник создателя"
+        },
+        "defaultCurrency": {
+          "type": "string",
+          "description": "Код валюты по-умолчанию, к которой будут приводиться все платежи в других валютах. Стандарт ISO 4217"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "id события"
+        },
+        "name": {
+          "type": "string",
+          "description": "Название события"
+        },
+        "participants": {
+          "type": "array",
+          "description": "Никнеймы участников события",
+          "items": {
+            "type": "string"
+          }
+        },
+        "payments": {
+          "type": "array",
+          "description": "Список платежей",
+          "items": {
+            "$ref": "#/definitions/EventFullDtoPayment"
+          }
+        }
+      },
+      "title": "EventFullControllerDto",
+      "description": "Полная сущность события"
+    },
+    "EventFullDtoPayment": {
+      "type": "object",
+      "required": [
+        "created",
+        "id",
+        "name",
+        "payer",
+        "spentAmounts"
+      ],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время создания платежа"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "id платежа"
+        },
+        "name": {
+          "type": "string",
+          "description": "Что было оплачено"
+        },
+        "payer": {
+          "type": "string",
+          "description": "Никнейм плательщика"
+        },
+        "spentAmounts": {
+          "type": "object",
+          "description": "На кого из участников сколько было потрачено",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      },
+      "title": "EventFullDtoPayment",
+      "description": "Сущность платежа внутри события"
+    },
+    "PaymentAmountDto": {
+      "type": "object",
+      "discriminator": "type",
+      "title": "PaymentAmountDto"
+    },
+    "PaymentAmountsAmountDto": {
+      "title": "PaymentAmountsAmountDto",
+      "allOf": [
+        {
+          "$ref": "#/definitions/PaymentAmountDto"
+        },
+        {
+          "type": "object",
+          "required": [
+            "spentAmounts"
+          ],
+          "properties": {
+            "spentAmounts": {
+              "type": "object",
+              "description": "Участники с указанием суммы каждого в платеже",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          },
+          "title": "PaymentAmountsAmountDto",
+          "description": "Тип платежа за указанных участников с указанными суммами"
+        }
+      ],
+      "description": "Тип платежа за указанных участников с указанными суммами"
+    },
+    "PaymentEqualAmountDto": {
+      "title": "PaymentEqualAmountDto",
+      "allOf": [
+        {
+          "$ref": "#/definitions/PaymentAmountDto"
+        },
+        {
+          "type": "object",
+          "required": [
+            "totalAmount"
+          ],
+          "properties": {
+            "totalAmount": {
+              "type": "number",
+              "description": "Сколько было потрачено денег всего"
+            }
+          },
+          "title": "PaymentEqualAmountDto",
+          "description": "Тип платежа за всех участников по-ровну"
+        }
+      ],
+      "description": "Тип платежа за всех участников по-ровну"
+    },
+    "PaymentPartsAmountDto": {
+      "type": "object",
+      "required": [
+        "spentParts",
+        "totalAmount"
+      ],
+      "properties": {
+        "spentParts": {
+          "type": "object",
+          "description": "Участники с указанием доли каждого в платеже",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Сколько было потрачено денег всего"
+        }
+      },
+      "title": "PaymentPartsAmountDto",
+      "description": "Тип платежа за указанных участников в пропорциях"
+    },
+    "TransactionAmount": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Сумма денег"
+        },
+        "currency": {
+          "type": "number",
+          "description": "Валюта"
+        }
+      },
+      "title": "TransactionAmount",
+      "description": "Сумма транзакции"
+    },
+    "TransactionDto": {
+      "type": "object",
+      "required": [
+        "amount",
+        "payee",
+        "payer"
+      ],
+      "properties": {
+        "amount": {
+          "description": "Сумма денег",
+          "$ref": "#/definitions/TransactionAmount"
+        },
+        "payee": {
+          "type": "string",
+          "description": "Получатель денег"
+        },
+        "payer": {
+          "type": "string",
+          "description": "Отправитель денег"
+        }
+      },
+      "title": "TransactionDto",
+      "description": "Транзакция"
+    },
+    "UpdatePaymentControllerDto": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "example": {
+            "type": "amounts",
+            "spentAmounts": {
+              "payeeNickname1": "500.0",
+              "payeeNickname2": "300.0"
+            }
+          },
+          "description": "Сколько было потрачено на кого из участников",
+          "$ref": "#/definitions/PaymentAmountDto"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время создания платежа"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Валюта платежа"
+        },
+        "name": {
+          "type": "string",
+          "description": "Что было оплачено"
+        },
+        "payer": {
+          "type": "string",
+          "description": "Никнейм плательщика"
+        }
+      },
+      "title": "UpdatePaymentControllerDto",
+      "description": "Сущность обновления платежа"
+    }
+  }
+}
