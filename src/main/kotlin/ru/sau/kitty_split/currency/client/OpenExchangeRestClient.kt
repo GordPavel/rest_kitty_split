@@ -3,6 +3,7 @@ package ru.sau.kitty_split.currency.client
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import ru.sau.kitty_split.currency.OpenExchangeException
 import java.math.BigDecimal
 import java.util.Currency
 

@@ -21,6 +21,7 @@ import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.client.ResponseErrorHandler
 import org.springframework.web.client.RestTemplate
+import ru.sau.kitty_split.currency.OpenExchangeException
 import java.math.BigDecimal
 import java.util.Currency
 

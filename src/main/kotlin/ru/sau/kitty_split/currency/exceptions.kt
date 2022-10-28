@@ -1,4 +1,4 @@
-package ru.sau.kitty_split.currency.client
+package ru.sau.kitty_split.currency
 
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import ru.sau.kitty_split.commons.HttpCodeException
