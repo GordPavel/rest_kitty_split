@@ -13,6 +13,9 @@ data class OutputData(
     val transactions: Map<String, Map<String, BigDecimal>>,
 )
 
+/**
+ * parts – в нем записано, на кого сколько потратили. Работает правило "На participants[i] потратили parts[i]"
+ */
 data class Spending(
     val payer: String,
     val good: String,
