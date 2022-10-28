@@ -2,7 +2,8 @@
 
 REST API аналог [Kitty split](https://www.kittysplit.com/ru/) для разделения счетов.
 
-Предоставляет следующие API endpoints, [описание REST контракта](swagger.json).
+Предоставляет следующие API endpoints, [описание REST контракта](swagger.json). Можно воспользоваться 
+[сайтом](https://editor.swagger.io) для наглядной демонстрации контракта.
 
 Для работы необходимо указать:
 
