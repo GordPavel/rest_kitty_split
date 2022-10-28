@@ -1,4 +1,6 @@
 spring:
+  swagger:
+    enabled: true
   jpa:
     show-sql: true
     generate-ddl: true

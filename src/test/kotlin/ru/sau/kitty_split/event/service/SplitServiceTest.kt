@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test
 import ru.sau.kitty_split.split.service.InputData
 import ru.sau.kitty_split.split.service.Spending
 import ru.sau.kitty_split.split.service.SplitService
+import ru.sau.kitty_split.split.service.SplitServiceStub
 import java.math.BigDecimal
 
 internal class SplitServiceTest {
 
-    private val splitService: SplitService = SplitService()
+    private val splitService: SplitService = SplitServiceStub()
 
     @Test
     fun `given TwoSimplePayment when split payment then split is correct`() {

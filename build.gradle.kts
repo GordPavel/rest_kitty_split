@@ -47,6 +47,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("io.mockk:mockk:1.12.5")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
 }
 
 dependencyManagement {

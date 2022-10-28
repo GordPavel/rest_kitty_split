@@ -1,5 +1,6 @@
 package ru.sau.kitty_split.commons
 
+import io.swagger.annotations.ApiModel
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
@@ -23,6 +24,7 @@ abstract class HttpCodeException(
     cause,
 )
 
+@ApiModel(description = "Ошибка")
 data class ApiErrorResponse(
     val errorMessage: String,
     val timestamp: OffsetDateTime,
