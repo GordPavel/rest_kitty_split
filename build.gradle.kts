@@ -1,8 +1,16 @@
+import io.wusa.GitService.Companion.lastTag
+import io.wusa.RegexResolver.Companion.findMatchingRegex
+import io.wusa.SemanticVersionFactory
+import io.wusa.TagType.LIGHTWEIGHT
+import io.wusa.extension.SemverGitPluginExtension
+import io.wusa.extension.SemverGitPluginExtension.Companion.DEFAULT_INCREMENTER
+import io.wusa.incrementer.VersionIncrementer.Companion.getVersionIncrementerByName
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "2.7.4"
     id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    id("io.wusa.semver-git-plugin") version ("2.3.7")
     kotlin("jvm") version "1.7.0"
     kotlin("plugin.spring") version "1.7.0"
     kotlin("plugin.jpa") version "1.7.0"
@@ -10,7 +18,6 @@ plugins {
 }
 
 group = "ru.sau"
-version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 extra["springCloudVersion"] = "2021.0.4"
@@ -50,6 +57,42 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
 }
 
+val semver = project.extensions.getByType(SemverGitPluginExtension::class)
+version = ""
+
+semver {
+    snapshotSuffix = ""
+    dirtyMarker = ""
+    initialVersion = "0.1.0"
+    tagType = LIGHTWEIGHT
+    branches {
+        branch {
+            regex = "master"
+            incrementer = "CONVENTIONAL_COMMITS_INCREMENTER"
+            formatter = Transformer {
+                "${semver.info.version.major}.${semver.info.version.minor}.${semver.info.version.patch}"
+            }
+        }
+        branch {
+            regex = ".+"
+            incrementer = "NO_VERSION_INCREMENTER"
+            formatter = Transformer {
+                "${semver.info.version.major}.${semver.info.version.minor}.${semver.info.version.patch}-${semver.info.branch.name}.build.${semver.info.count}"
+            }
+        }
+    }
+}
+
+tasks.register("incrementVersion") {
+    val semanticVersionFactory = SemanticVersionFactory()
+    val tagPrefix = semver.tagPrefix
+    val lastTag = lastTag(project, tagPrefix, tagType = semver.tagType)
+    val incrementer = findMatchingRegex(semver.branches, semver.info.branch.name)
+        ?.let { getVersionIncrementerByName(it.incrementer) }
+        ?: getVersionIncrementerByName(DEFAULT_INCREMENTER)
+    incrementer.increment(semanticVersionFactory.createFromString(lastTag.substring(tagPrefix.length)), project)
+}
+
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
@@ -61,6 +104,10 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
 
 tasks.withType<Test> {
