@@ -1,0 +1,45 @@
+name: Test and publish release
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  docker:
+    name: Publish Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+      - name: Increment release version
+        id: version
+        run: echo "version=$(./gradlew --stacktrace -q :showVersion | cut -d' ' -f2)" >> $GITHUB_OUTPUT
+      - name: Show version
+        run: echo "${{ steps.version.outputs.version }}"
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: YC Docker registry login
+        run: >-
+          cat << EOT | docker login --username json_key --password-stdin cr.yandex
+            ${{ secrets.YC_REGISTRY_SECRET }}
+          EOT
+      - uses: gradle/gradle-build-action@v2
+        name: Package JAR
+        with:
+          arguments: bootJar
+      - name: Build image
+        run: "docker build . -t cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }}"
+      - name: Push image
+        run: "docker push cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }}"
+#      - name: Tag release
+#        uses: tvdias/github-tagger@v0.0.1
+#        with:
+#          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+#          tag: "${{ steps.version.outputs.version }}"

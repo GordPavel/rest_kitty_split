@@ -5,6 +5,11 @@ springfox:
   documentation:
     enabled: ${spring.swagger.enabled}
 
+external:
+  open.exchange:
+    base-url: ${OPEN_EXCHANGE_BASE_URL}
+    app-id: ${OPEN_EXCHANGE_APP_ID}
+
 spring:
   swagger:
     enabled: false

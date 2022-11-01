@@ -1,6 +1,7 @@
 package ru.sau.kitty_split.event.service
 
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import ru.sau.kitty_split.split.service.InputData
 import ru.sau.kitty_split.split.service.Spending
@@ -8,6 +9,7 @@ import ru.sau.kitty_split.split.service.SplitService
 import ru.sau.kitty_split.split.service.SplitServiceStub
 import java.math.BigDecimal
 
+@Disabled
 internal class SplitServiceTest {
 
     private val splitService: SplitService = SplitServiceStub()
