@@ -37,3 +37,6 @@ out/
 .vscode/
 
 database/
+
+yc-db/
+docker-compose/

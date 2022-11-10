@@ -1,0 +1,10 @@
+spring:
+  swagger:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    properties:
+      ssl: true
+      sslMode: VERIFY_CA

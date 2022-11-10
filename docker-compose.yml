@@ -8,10 +8,16 @@ services:
       - "db:database"
     ports:
       - "80:8080"
+    volumes:
+      - "/Users/p.v.gordeev/tinkoff/meetup/kitty_split/yc-db:/yc-db"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/kitty_split
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_ACTIVE_PROFILES=yc-postgres
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_DATASOURCE_PROPERTIES_SSL_ROOT_CERT=${SPRING_DATASOURCE_PROPERTIES_SSL_ROOT_CERT}
+      - OPEN_EXCHANGE_BASE_URL=http://openexchangerates.org/api
+      - OPEN_EXCHANGE_APP_ID=${OPEN_EXCHANGE_APP_ID}
 
   db:
     image: postgres:14-alpine
