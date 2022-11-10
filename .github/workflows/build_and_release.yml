@@ -35,10 +35,9 @@ jobs:
         with:
           arguments: bootJar
       - name: Create file with YC DB crt
-        run: >-
-          cat << EOT > /db-root.crt
-            ${{ secrets.YC_DB_ROOT_CRT }}
-          EOT
+        run: 'echo "$YC_DB_ROOT_CRT" > db-root.crt'
+        env:
+          YC_DB_ROOT_CRT: "${{ secrets.YC_DB_ROOT_CRT }}"
       - name: Build image
         run: "docker build --build-arg DB_ROOT_FILE_PATH=/db-root.crt -t cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }} ."
       - name: Push image
