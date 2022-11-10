@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+paths:
+  /events:
+    post:
+      summary: Create new event
+      operationId: createNewEvent
+      tags:
+        - event
+        - create
+      responses:
+        '200':
+          description: New event info
+          content:
+            'application/json':
+              schema:
+                type: object
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt
+  /events/{ID}:
+    get:
+      summary: Get event info
+      operationId: getEvent
+      tags:
+        - event
+        - get
+      responses:
+        '200':
+          description: Event info
+          content:
+            'application/json':
+              schema:
+                type: object
+      parameters:
+        - name: ID
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt
+  /events/{eventId}/payments:
+    post:
+      summary: Create new payment
+      operationId: createNewPayment
+      tags:
+        - payment
+        - create
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: New payment info
+          content:
+            'application/json':
+              schema:
+                type: object
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt
+  /events/{eventId}/payments/{paymentId}:
+    patch:
+      summary: Change payment info
+      operationId: getPayment
+      tags:
+        - payment
+        - patch
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: string
+        - name: paymentId
+          in: path
+          description: Payment id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: New payment info
+          content:
+            'application/json':
+              schema:
+                type: object
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt
+    delete:
+      summary: Delete payment
+      operationId: deletePayment
+      tags:
+        - payment
+        - delete
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: string
+        - name: paymentId
+          in: path
+          description: Payment id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment deleted
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt
+  /events/{ID}/transactions:
+    get:
+      summary: Get event transactions
+      operationId: getEventTransactions
+      tags:
+        - transactions
+        - get
+      responses:
+        '200':
+          description: Transactions info
+          content:
+            'application/json':
+              schema:
+                type: object
+      parameters:
+        - name: ID
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbau1g4lui7kajcj93t6
+        service_account_id: aje3plneh1hjqpb62ldt

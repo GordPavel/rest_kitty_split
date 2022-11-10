@@ -6,12 +6,18 @@ services:
       - db
     links:
       - "db:database"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 512M
     ports:
-      - "80:8080"
-    volumes:
-      - "/Users/p.v.gordeev/tinkoff/meetup/kitty_split/yc-db:/yc-db"
+      - "80:${PORT}"
     environment:
-      - SPRING_ACTIVE_PROFILES=yc-postgres
+      - JAVA_OPTS="-server -Xms200m -Xmx400m -Dfile.encoding=UTF-8 -Duser.country=RU -Duser.language=ru -XX:+UseG1GC -XX:ActiveProcessorCount=2 -XX:+AlwaysActAsServerClassMachine"
+      - SERVER_PORT=${PORT}
+      - SPRING_PROFILES_ACTIVE=yc-postgres
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
