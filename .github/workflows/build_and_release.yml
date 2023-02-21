@@ -41,7 +41,7 @@ jobs:
       - name: Build image
         run: "docker build -t cr.yandex/crp9kru8tj6dake6bcjm/kitty_split:${{ steps.version.outputs.version }} ."
       - name: Push image
-        run: "docker push cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }}"
+        run: "docker push cr.yandex/crp9kru8tj6dake6bcjm/kitty_split:${{ steps.version.outputs.version }}"
 #      - name: Tag release
 #        uses: tvdias/github-tagger@v0.0.1
 #        with:
