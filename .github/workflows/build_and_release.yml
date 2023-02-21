@@ -30,16 +30,16 @@ jobs:
           cat << EOT | docker login --username json_key --password-stdin cr.yandex
             ${{ secrets.YC_REGISTRY_SECRET }}
           EOT
-      - name: Create file with YC DB crt
-        run: 'echo "$YC_DB_ROOT_CRT" > db-root.crt'
-        env:
-          YC_DB_ROOT_CRT: "${{ secrets.YC_DB_ROOT_CRT }}"
+#      - name: Create file with YC DB crt
+#        run: 'echo "$YC_DB_ROOT_CRT" > db-root.crt'
+#        env:
+#          YC_DB_ROOT_CRT: "${{ secrets.YC_DB_ROOT_CRT }}"
       - uses: gradle/gradle-build-action@v2
         name: Package JAR
         with:
           arguments: bootJar
       - name: Build image
-        run: "docker build --build-arg DB_ROOT_FILE_PATH=db-root.crt -t cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }} ."
+        run: "docker build -t cr.yandex/crp9kru8tj6dake6bcjm/kitty_split:${{ steps.version.outputs.version }} ."
       - name: Push image
         run: "docker push cr.yandex/crpvhpas1ujpsq3bsq6d/kitty_split:${{ steps.version.outputs.version }}"
 #      - name: Tag release
